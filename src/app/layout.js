@@ -45,6 +45,11 @@ export const metadata = {
       "max-image-preview": "large",
       "max-snippet": -1,
     },
+        bingBot: {
+      index: true,
+      follow: true,
+      noimageindex: false,
+    },
   },
   twitter: {
     card: "summary_large_image",
