@@ -42,7 +42,8 @@ const ViewCounter = ({ slug, noCount = false, showCount = true }) => {
   .single()
 
         if (error){
-            console.error("Error incrementing view count inside try block:", error)
+            console.error("Error incrementing view count inside try block:", error);
+
         };
 
 
