@@ -22,7 +22,7 @@ export const metadata = {
   metadataBase: new URL(siteMetadata.siteUrl),
   title: {
     template: `%s | ${siteMetadata.title}`,
-    default: siteMetadata.title, // a default is required when creating a template
+    default: siteMetadata.title,
   },
   description: siteMetadata.description,
   openGraph: {
@@ -51,8 +51,10 @@ export const metadata = {
     title: siteMetadata.title,
     images: [siteMetadata.socialBanner],
   },
+  // ✅ Search Engine Verifications
   verification: {
-    google: "avrkR73RQOAVvrKDWla0Rk6QGr4Pn33fj7ORrHAOMWQ", // ✅ Google Search Console verification
+    google: "avrkR73RQOAVvrKDWla0Rk6QGr4Pn33fj7ORrHAOMWQ", // Google Search Console
+    bing: "537B67B3B96DC9AFEAA232E4411E3551",              // Bing Webmaster Tools
   },
 };
 
