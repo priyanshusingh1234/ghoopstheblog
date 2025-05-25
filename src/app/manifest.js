@@ -1,8 +1,8 @@
 export default function manifest() {
     return {
-      name: 'Next.js App',
-      short_name: 'Next.js App',
-      description: 'Next.js App',
+      name: 'Ghoops The Blog',
+      short_name: 'ghoopstheblog',
+      description: 'A blog for providing you with the best possible articles.',
       start_url: '/',
       display: 'standalone',
     //   background_color: '#fff',
