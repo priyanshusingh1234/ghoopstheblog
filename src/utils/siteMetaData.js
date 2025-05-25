@@ -1,8 +1,8 @@
 // please update required information
 const siteMetadata = {
-    title: 'Ghoops! | The blog | A blog for everyone.',
+    title: 'Ghoops! | The blog for everyone.',
     author: 'Priyanshu',
-    headerTitle: 'Ghoops',
+    headerTitle: 'ghoopstheblog',
     description: 'A blog for providing you with the best possible articles.',
     language: 'en-us',
     theme: 'system', // system, dark or light
