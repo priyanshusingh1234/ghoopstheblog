@@ -10,10 +10,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
 
       - name: Run IndexNow Ping Script
-        run: |
-          node scripts/indexnow.js
+        run: node scripts/indexnow.js
         env:
-          NODE_OPTIONS: "--experimental-fetch" # if you want to use fetch in Node
+          NODE_OPTIONS: "--experimental-fetch"
