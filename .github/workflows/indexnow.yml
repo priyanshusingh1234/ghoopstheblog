@@ -1,0 +1,19 @@
+name: Notify IndexNow after Vercel Deployment
+
+on:
+  push:
+    branches:
+      - main  # or your production branch
+
+jobs:
+  indexnow-ping:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run IndexNow Ping Script
+        run: |
+          node scripts/indexnow.js
+        env:
+          NODE_OPTIONS: "--experimental-fetch" # if you want to use fetch in Node
