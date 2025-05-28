@@ -111,7 +111,7 @@ export default async function BlogPage({ params }) {
 
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "NewsArticle",
+    "@type": "BlogPosting",
     "headline": blog.title,
     "description": blog.description,
     "image": imageList,
