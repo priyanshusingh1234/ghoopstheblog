@@ -3,7 +3,10 @@ const https = require('https');
 const key = '0348f37c0ea34ea2829e565b2658dc9d'; // your real IndexNow key
 const urls = [
   'https://ghoopstheblog.vercel.app/', // homepage
-  // Add more URLs here as needed
+  'https://ghoopstheblog.vercel.app/about',
+  'https://ghoopstheblog.vercel.app/contact',
+  'https://ghoopstheblog.vercel.app/blogs/the-lost-city-of-atlantis',
+  'https://ghoopstheblog.vercel.app/blogs/five-mysterious-locations-of-the-world-that-continue-to-baffle-scientists',
 ];
 
 urls.forEach((url) => {
