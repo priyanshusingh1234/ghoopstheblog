@@ -12,6 +12,7 @@ const SkillList = [
   "SEO",
   "framer motion",
   "sanity",
+  "More",
 ];
 
 const Skills = () => {
