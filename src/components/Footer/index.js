@@ -127,7 +127,7 @@ const Footer = () => {
         <span className="text-center">
           &copy;2025 Ghoops!. All rights reserved.
         </span>
-        
+
       </div>
     </footer>
   );
