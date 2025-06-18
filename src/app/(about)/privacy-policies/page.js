@@ -1,7 +1,7 @@
 import React from "react";
 
 export const metadata = {
-  title: "Privacy Policy | GhoopsTheBlog",
+  title: "Privacy Policy ",
   description:
     "Read the privacy policy of GhoopsTheBlog to understand how we collect, use, and protect your personal data. Learn more about cookies, data usage, and third-party services.",
   alternates: {
