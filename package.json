@@ -9,9 +9,10 @@
     "start": "next start",
     "lint": "next lint",
     "content": "velite --clean",
-     "indexnow": "node scripts/indexnow.js"
+    "indexnow": "node scripts/indexnow.js"
   },
   "dependencies": {
+    "@giscus/react": "^3.1.0",
     "@lottiefiles/dotlottie-react": "^0.12.0",
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/supabase-js": "^2.47.9",
