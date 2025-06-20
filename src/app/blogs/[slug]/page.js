@@ -10,6 +10,7 @@ import { notFound } from "next/navigation";
 // ✅ Import your GiscusComment component
 import GiscusComment from "@/src/components/GiscusComment/GiscusComment";
 
+
 export async function generateStaticParams() {
   return blogs.map((blog) => ({ slug: blog.slug }));
 }
