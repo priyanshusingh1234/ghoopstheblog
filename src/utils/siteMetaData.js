@@ -14,7 +14,7 @@ const siteMetadata = {
   twitterUsername: '@yourTwitterHandle',
   githubUsername: 'yourGithubUsername',
   linkedinUsername: 'yourLinkedInUsername',
-  keywords: ['blog', 'articles', 'technology', 'life', 'tutorials'],
+  keywords: ['blog', 'articles', 'technology', 'life', 'tutorials','sports','defense','food','world'],
 };
 
 module.exports = siteMetadata;
