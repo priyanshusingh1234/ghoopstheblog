@@ -12,7 +12,7 @@ const siteMetadata = {
   email: 'kpk22128@gmail.com',
   locale: 'en-US',
   twitterUsername: '@yourTwitterHandle',
-  githubUsername: 'yourGithubUsername',
+  githubUsername: 'priyanshusingh1234',
   linkedinUsername: 'yourLinkedInUsername',
   keywords: ['blog', 'articles', 'technology', 'life', 'tutorials','sports','defense','food','world'],
 };
