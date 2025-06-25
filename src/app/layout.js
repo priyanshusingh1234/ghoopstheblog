@@ -5,7 +5,11 @@ import Header from "@/src/components/Header";
 import Footer from "../components/Footer";
 import siteMetadata from "../utils/siteMetaData";
 import Script from "next/script";
-import Head from "next/head"; // ✅ Import this
+import Head from "next/head";
+
+// 🆕 Clerk
+import { ClerkProvider } from '@clerk/nextjs';
+import { clerkFrontendApi } from './clerk-config'; // You created this earlier
 
 const inter = Inter({
   subsets: ["latin"],
@@ -65,29 +69,31 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <Head>
-        {/* ✅ Add this meta tag for AdSense */}
-        <meta name="google-adsense-account" content="ca-pub-2649070791913290" />
-      </Head>
-      <body
-        className={cx(
-          inter.variable,
-          manrope.variable,
-          "font-mr bg-light dark:bg-dark"
-        )}
-      >
-        <Script id="theme-switcher" strategy="beforeInteractive">
-          {`if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-    document.documentElement.classList.add('dark')
-  } else {
-    document.documentElement.classList.remove('dark')
-  }`}
-        </Script>
-        <Header />
-        {children}
-        <Footer />
-      </body>
-    </html>
+    <ClerkProvider frontendApi={clerkFrontendApi}>
+      <html lang="en">
+        <Head>
+          {/* ✅ Google AdSense meta tag */}
+          <meta name="google-adsense-account" content="ca-pub-2649070791913290" />
+        </Head>
+        <body
+          className={cx(
+            inter.variable,
+            manrope.variable,
+            "font-mr bg-light dark:bg-dark"
+          )}
+        >
+          <Script id="theme-switcher" strategy="beforeInteractive">
+            {`if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+              document.documentElement.classList.add('dark')
+            } else {
+              document.documentElement.classList.remove('dark')
+            }`}
+          </Script>
+          <Header />
+          {children}
+          <Footer />
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
