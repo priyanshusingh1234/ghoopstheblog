@@ -7,28 +7,15 @@ import siteMetadata from "../utils/siteMetaData";
 import Script from "next/script";
 import Head from "next/head";
 
-// 🆕 Clerk
+// ✅ Clerk
 import { ClerkProvider } from '@clerk/nextjs';
-import { clerkFrontendApi } from './clerk-config'; // You created this earlier
 
-const inter = Inter({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-in",
-});
-
-const manrope = Manrope({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-mr",
-});
+const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--font-in" });
+const manrope = Manrope({ subsets: ["latin"], display: "swap", variable: "--font-mr" });
 
 export const metadata = {
   metadataBase: new URL(siteMetadata.siteUrl),
-  title: {
-    template: `%s | ${siteMetadata.title}`,
-    default: siteMetadata.title,
-  },
+  title: { template: `%s | ${siteMetadata.title}`, default: siteMetadata.title },
   description: siteMetadata.description,
   openGraph: {
     title: siteMetadata.title,
@@ -50,11 +37,7 @@ export const metadata = {
       "max-image-preview": "large",
       "max-snippet": -1,
     },
-    bingBot: {
-      index: true,
-      follow: true,
-      noimageindex: false,
-    },
+    bingBot: { index: true, follow: true, noimageindex: false },
   },
   twitter: {
     card: "summary_large_image",
@@ -69,10 +52,9 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <ClerkProvider frontendApi={clerkFrontendApi}>
+    <ClerkProvider>
       <html lang="en">
         <Head>
-          {/* ✅ Google AdSense meta tag */}
           <meta name="google-adsense-account" content="ca-pub-2649070791913290" />
         </Head>
         <body
