@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/src/utils/firebase";
 import ReactMarkdown from "react-markdown";
+import FaqsWriter from "@/src/components/FaqsWriter/FaqsWriter";
 
 export default function SubmitArticlePage() {
   const [title, setTitle] = useState("");
@@ -174,6 +175,7 @@ export default function SubmitArticlePage() {
           Logged in as <span className="font-medium underline underline-offset-2 decoration-blue-500">{user.displayName || user.email}</span>
         </div>
       )}
+      <FaqsWriter/>
     </main>
   );
 }
