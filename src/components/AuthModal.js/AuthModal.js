@@ -20,7 +20,7 @@ export default function AuthModal({ isOpen, onClose }) {
     if (user) return;
 
     const viewCount = parseInt(localStorage.getItem("authModalViews") || "0");
-    if (viewCount < 3 && isOpen) {
+    if (viewCount < 2 && isOpen) {
       setShouldShow(true);
       localStorage.setItem("authModalViews", (viewCount + 1).toString());
       document.body.style.overflow = "hidden";
