@@ -127,6 +127,8 @@ const Footer = () => {
         <span className="text-center">
           &copy;2025 Ghoops!. All rights reserved.
         </span>
+        
+        <a href="/submit">Write</a>
 
       </div>
     </footer>

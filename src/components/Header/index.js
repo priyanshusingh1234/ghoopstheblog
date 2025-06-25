@@ -3,7 +3,7 @@ import Link from "next/link";
 import Logo from "./Logo";
 import { MoonIcon, SunIcon } from "../Icons";
 import { useThemeSwitch } from "../Hooks/useThemeSwitch";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { cx } from "@/src/utils";
 import { auth } from "@/src/utils/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
@@ -12,6 +12,8 @@ const Header = () => {
   const [mode, setMode] = useThemeSwitch();
   const [click, setClick] = useState(false);
   const [user, setUser] = useState(null);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const profileRef = useRef(null);
 
   const toggle = () => setClick(!click);
 
@@ -20,6 +22,16 @@ const Header = () => {
       setUser(user || null);
     });
     return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (profileRef.current && !profileRef.current.contains(e.target)) {
+        setShowProfileMenu(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const handleLogout = () => {
@@ -35,7 +47,7 @@ const Header = () => {
     <header className="w-full p-4 px-5 sm:px-10 flex items-center justify-between relative z-50">
       <Logo />
 
-      {/* Hamburger Button for Mobile */}
+      {/* Hamburger for mobile */}
       <button
         className="inline-block sm:hidden z-50"
         onClick={toggle}
@@ -67,7 +79,7 @@ const Header = () => {
         </div>
       </button>
 
-      {/* ✅ Mobile Dropdown Navigation */}
+      {/* Mobile Navigation */}
       <nav
         className={cx(
           "sm:hidden flex flex-col items-center fixed top-20 left-1/2 -translate-x-1/2 w-11/12 max-w-xs z-40 bg-light dark:bg-dark text-dark dark:text-light rounded-xl shadow-xl border border-dark/10 dark:border-light/10 transition-all duration-300 ease-in-out overflow-hidden",
@@ -76,36 +88,26 @@ const Header = () => {
             : "opacity-0 scale-95 pointer-events-none"
         )}
       >
-        <Link
-          href="/"
-          className="py-3 w-full text-center border-b border-light/40 dark:border-dark/40 hover:bg-gray-100 dark:hover:bg-zinc-800"
-          onClick={() => setClick(false)}
-        >
-          Home
-        </Link>
-        <Link
-          href="/about"
-          className="py-3 w-full text-center border-b border-light/40 dark:border-dark/40 hover:bg-gray-100 dark:hover:bg-zinc-800"
-          onClick={() => setClick(false)}
-        >
-          About
-        </Link>
-        <Link
-          href="/contact"
-          className="py-3 w-full text-center border-b border-light/40 dark:border-dark/40 hover:bg-gray-100 dark:hover:bg-zinc-800"
-          onClick={() => setClick(false)}
-        >
-          Contact
-        </Link>
-        <Link
-          href="/privacy-policies"
-          className="py-3 w-full text-center border-b border-light/40 dark:border-dark/40 hover:bg-gray-100 dark:hover:bg-zinc-800"
-          onClick={() => setClick(false)}
-        >
-          Privacy Policy
-        </Link>
+        {[
+          { path: "/", label: "Home" },
+          { path: "/about", label: "About" },
+          { path: "/contact", label: "Contact" },
+          { path: "/privacy-policies", label: "Privacy" },
+          { path: "/submit", label: "Write" }, // ✅ added
+        ].map(({ path, label }, i) => (
+          <Link
+            key={i}
+            href={path}
+            onClick={() => setClick(false)}
+            className="py-3 w-full text-center border-b border-light/40 dark:border-dark/40 hover:bg-gray-100 dark:hover:bg-zinc-800"
+          >
+            {label}
+          </Link>
+        ))}
 
-        {/* ✅ Auth Section in Mobile */}
+
+
+        {/* Mobile Auth Section */}
         <div className="py-3 w-full text-center border-t border-light/40 dark:border-dark/40">
           {user ? (
             <div className="flex flex-col items-center space-y-2">
@@ -114,7 +116,9 @@ const Header = () => {
                 alt="profile"
                 className="w-10 h-10 rounded-full object-cover"
               />
-              <span className="text-sm">{user.displayName || user.email}</span>
+              <span className="text-sm text-dark dark:text-light max-w-[140px] truncate">
+                {user.displayName || user.email}
+              </span>
               <button
                 onClick={() => {
                   setClick(false);
@@ -145,7 +149,7 @@ const Header = () => {
           )}
         </div>
 
-        {/* ✅ Theme Switcher Mobile */}
+        {/* Mobile Theme Switch */}
         <div className="py-3">
           <button
             onClick={() => setMode(mode === "light" ? "dark" : "light")}
@@ -156,20 +160,21 @@ const Header = () => {
             aria-label="theme-switcher"
           >
             {mode === "light" ? (
-              <MoonIcon className={"fill-dark"} />
+              <MoonIcon className="fill-dark" />
             ) : (
-              <SunIcon className={"fill-dark"} />
+              <SunIcon className="fill-dark" />
             )}
           </button>
         </div>
       </nav>
 
-      {/* ✅ Desktop Navigation Centered */}
+      {/* Desktop Navigation */}
       <nav className="w-max py-3 px-8 border border-solid border-dark rounded-full font-medium capitalize items-center hidden sm:flex fixed top-6 right-1/2 translate-x-1/2 bg-light/80 backdrop-blur-sm z-40">
         <Link href="/" className="mr-2">Home</Link>
         <Link href="/about" className="mx-2">About</Link>
         <Link href="/contact" className="mx-2">Contact</Link>
         <Link href="/privacy-policies" className="mx-2">Privacy</Link>
+        <Link href="/submit" className="mx-2">Write</Link>
         <button
           onClick={() => setMode(mode === "light" ? "dark" : "light")}
           className={cx(
@@ -179,30 +184,59 @@ const Header = () => {
           aria-label="theme-switcher"
         >
           {mode === "light" ? (
-            <MoonIcon className={"fill-dark"} />
+            <MoonIcon className="fill-dark" />
           ) : (
-            <SunIcon className={"fill-dark"} />
+            <SunIcon className="fill-dark" />
           )}
         </button>
       </nav>
 
-      {/* ✅ Auth section Desktop - Top Right */}
-      <div className="hidden sm:flex items-center absolute top-6 right-6 z-50">
+      {/* Desktop Auth + Profile Dropdown */}
+      <div
+        className="hidden sm:flex items-center space-x-3 relative"
+        ref={profileRef}
+      >
         {user ? (
-          <div className="flex items-center space-x-3">
+          <>
             <img
               src={user.photoURL || "/default-avatar.png"}
               alt="profile"
-              className="w-8 h-8 rounded-full object-cover"
+              className="w-8 h-8 rounded-full object-cover cursor-pointer"
+              onClick={() => setShowProfileMenu((prev) => !prev)}
             />
-            <span className="text-sm">{user.displayName || user.email}</span>
-            <button
-              onClick={handleLogout}
-              className="text-red-600 text-sm hover:underline ml-2"
-            >
-              Logout
-            </button>
-          </div>
+            {showProfileMenu && (
+              <div className="absolute right-0 mt-12 w-64 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 rounded-xl shadow-lg p-4 z-50">
+                <div className="flex items-center space-x-3 mb-4">
+                  <img
+                    src={user.photoURL || "/default-avatar.png"}
+                    alt="profile"
+                    className="w-10 h-10 rounded-full object-cover"
+                  />
+                  <div>
+                    <p className="text-sm font-semibold text-dark dark:text-light truncate">
+                      {user.displayName || "Anonymous"}
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                      {user.email}
+                    </p>
+                  </div>
+                </div>
+                <Link
+                  href="/profile"
+                  className="block text-sm text-blue-600 hover:underline mb-2"
+                  onClick={() => setShowProfileMenu(false)}
+                >
+                  View Profile
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="w-full text-left text-sm text-red-600 hover:underline"
+                >
+                  Logout
+                </button>
+              </div>
+            )}
+          </>
         ) : (
           <div className="space-x-3 text-sm">
             <Link href="/login" className="text-blue-600 underline">Login</Link>

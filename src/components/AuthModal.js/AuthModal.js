@@ -2,23 +2,30 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { useUser } from "@clerk/nextjs"; // or your auth hook
+import { auth } from "@/src/utils/firebase";
+import { onAuthStateChanged } from "firebase/auth";
 
 export default function AuthModal({ isOpen, onClose }) {
-  const { user } = useUser(); // Adjust depending on your auth provider
+  const [user, setUser] = useState(null);
   const [shouldShow, setShouldShow] = useState(false);
 
   useEffect(() => {
-    if (user) return; // Don't show for signed-in users
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      setUser(firebaseUser);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (user) return;
 
     const viewCount = parseInt(localStorage.getItem("authModalViews") || "0");
-
     if (viewCount < 3 && isOpen) {
       setShouldShow(true);
       localStorage.setItem("authModalViews", (viewCount + 1).toString());
       document.body.style.overflow = "hidden";
     } else {
-      onClose(); // close if limit reached
+      onClose();
     }
 
     return () => {
@@ -47,7 +54,6 @@ export default function AuthModal({ isOpen, onClose }) {
           className="relative bg-white dark:bg-zinc-900 text-black dark:text-white p-8 md:p-12 rounded-2xl w-[95%] max-w-3xl shadow-2xl"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Close Button */}
           <button
             onClick={onClose}
             className="absolute top-4 right-4 text-gray-400 hover:text-red-600 text-2xl font-bold"
@@ -56,15 +62,13 @@ export default function AuthModal({ isOpen, onClose }) {
             &times;
           </button>
 
-          {/* Content */}
           <div className="text-center">
             <h2 className="text-3xl md:text-4xl font-extrabold mb-3">
               Welcome to GhoopsTheBlog 🚀
             </h2>
             <p className="text-gray-600 dark:text-gray-300 text-base md:text-lg mb-6">
               Dive into hand-picked content curated for developers, tech
-              enthusiasts, and curious minds. Get updates, guides, and
-              behind-the-scenes insights straight from the community.
+              enthusiasts, and curious minds.
             </p>
 
             <div className="flex justify-center gap-6 mt-8">
