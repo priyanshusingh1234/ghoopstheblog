@@ -1,24 +1,35 @@
 "use client";
 import Link from "next/link";
 import Logo from "./Logo";
-import {
-  DribbbleIcon,
-  GithubIcon,
-  LinkedinIcon,
-  MoonIcon,
-  SunIcon,
-  TwitterIcon,
-} from "../Icons";
-import siteMetadata from "@/src/utils/siteMetaData";
+import { MoonIcon, SunIcon } from "../Icons";
 import { useThemeSwitch } from "../Hooks/useThemeSwitch";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cx } from "@/src/utils";
+import { auth } from "@/src/utils/firebase";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 
 const Header = () => {
   const [mode, setMode] = useThemeSwitch();
   const [click, setClick] = useState(false);
+  const [user, setUser] = useState(null);
 
   const toggle = () => setClick(!click);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user || null);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const handleLogout = () => {
+    signOut(auth)
+      .then(() => {
+        setUser(null);
+        window.location.href = "/";
+      })
+      .catch((err) => console.error("Logout failed:", err));
+  };
 
   return (
     <header className="w-full p-4 px-5 sm:px-10 flex items-center justify-between relative z-50">
@@ -42,9 +53,7 @@ const Header = () => {
             />
             <span
               className="absolute top-1.5 inline-block w-full h-0.5 bg-dark dark:bg-light rounded transition-all ease duration-200"
-              style={{
-                opacity: click ? 0 : 1,
-              }}
+              style={{ opacity: click ? 0 : 1 }}
             />
             <span
               className="absolute bottom-0 inline-block w-full h-0.5 bg-dark dark:bg-light rounded transition-all ease duration-200"
@@ -90,20 +99,59 @@ const Header = () => {
         </Link>
         <Link
           href="/privacy-policies"
-          className="py-3 w-full text-center hover:bg-gray-100 dark:hover:bg-zinc-800"
+          className="py-3 w-full text-center border-b border-light/40 dark:border-dark/40 hover:bg-gray-100 dark:hover:bg-zinc-800"
           onClick={() => setClick(false)}
         >
           Privacy Policy
         </Link>
 
-        <div className="py-2">
+        {/* ✅ Auth Section in Mobile */}
+        <div className="py-3 w-full text-center border-t border-light/40 dark:border-dark/40">
+          {user ? (
+            <div className="flex flex-col items-center space-y-2">
+              <img
+                src={user.photoURL || "/default-avatar.png"}
+                alt="profile"
+                className="w-10 h-10 rounded-full object-cover"
+              />
+              <span className="text-sm">{user.displayName || user.email}</span>
+              <button
+                onClick={() => {
+                  setClick(false);
+                  handleLogout();
+                }}
+                className="text-red-600 text-sm hover:underline"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              <Link
+                href="/login"
+                onClick={() => setClick(false)}
+                className="text-blue-600 underline block"
+              >
+                Login
+              </Link>
+              <Link
+                href="/sign-up"
+                onClick={() => setClick(false)}
+                className="text-blue-600 underline block"
+              >
+                Sign Up
+              </Link>
+            </div>
+          )}
+        </div>
+
+        {/* ✅ Theme Switcher Mobile */}
+        <div className="py-3">
           <button
             onClick={() => setMode(mode === "light" ? "dark" : "light")}
             className={cx(
-              "w-8 h-8 ease ml-2 flex items-center justify-center rounded-full p-1",
-              mode === "light"
-                ? "bg-dark text-light"
-                : "bg-light text-dark"
+              "w-8 h-8 ease flex items-center justify-center rounded-full p-1",
+              mode === "light" ? "bg-dark text-light" : "bg-light text-dark"
             )}
             aria-label="theme-switcher"
           >
@@ -116,27 +164,17 @@ const Header = () => {
         </div>
       </nav>
 
-      {/* ✅ Desktop Navigation */}
+      {/* ✅ Desktop Navigation Centered */}
       <nav className="w-max py-3 px-8 border border-solid border-dark rounded-full font-medium capitalize items-center hidden sm:flex fixed top-6 right-1/2 translate-x-1/2 bg-light/80 backdrop-blur-sm z-40">
-        <Link href="/" className="mr-2">
-          Home
-        </Link>
-        <Link href="/about" className="mx-2">
-          About
-        </Link>
-        <Link href="/contact" className="mx-2">
-          Contact
-        </Link>
-        <Link href="/privacy-policies" className="mx-2">
-          Privacy
-        </Link>
+        <Link href="/" className="mr-2">Home</Link>
+        <Link href="/about" className="mx-2">About</Link>
+        <Link href="/contact" className="mx-2">Contact</Link>
+        <Link href="/privacy-policies" className="mx-2">Privacy</Link>
         <button
           onClick={() => setMode(mode === "light" ? "dark" : "light")}
           className={cx(
             "w-6 h-6 ease ml-2 flex items-center justify-center rounded-full p-1",
-            mode === "light"
-              ? "bg-dark text-light"
-              : "bg-light text-dark"
+            mode === "light" ? "bg-dark text-light" : "bg-light text-dark"
           )}
           aria-label="theme-switcher"
         >
@@ -148,45 +186,30 @@ const Header = () => {
         </button>
       </nav>
 
-      {/* ✅ Social Icons */}
-      {/* <div className="hidden sm:flex items-center">
-        <a
-          href={siteMetadata.linkedin}
-          rel="noopener noreferrer"
-          className="inline-block w-6 h-6 mr-4"
-          aria-label="Reach out to me via LinkedIn"
-          target="_blank"
-        >
-          <LinkedinIcon className="hover:scale-125 transition-all ease duration-200" />
-        </a>
-        <a
-          href={siteMetadata.twitter}
-          rel="noopener noreferrer"
-          className="inline-block w-6 h-6 mr-4"
-          aria-label="Reach out to me via Twitter"
-          target="_blank"
-        >
-          <TwitterIcon className="hover:scale-125 transition-all ease duration-200" />
-        </a>
-        <a
-          href={siteMetadata.github}
-          rel="noopener noreferrer"
-          className="inline-block w-6 h-6 mr-4"
-          aria-label="Check my profile on Github"
-          target="_blank"
-        >
-          <GithubIcon className="hover:scale-125 transition-all ease duration-200 dark:fill-light" />
-        </a>
-        <a
-          href={siteMetadata.dribbble}
-          rel="noopener noreferrer"
-          className="inline-block w-6 h-6 mr-4"
-          aria-label="Check my profile on Dribbble"
-          target="_blank"
-        >
-          <DribbbleIcon className="hover:scale-125 transition-all ease duration-200" />
-        </a>
-      </div> */}
+      {/* ✅ Auth section Desktop - Top Right */}
+      <div className="hidden sm:flex items-center absolute top-6 right-6 z-50">
+        {user ? (
+          <div className="flex items-center space-x-3">
+            <img
+              src={user.photoURL || "/default-avatar.png"}
+              alt="profile"
+              className="w-8 h-8 rounded-full object-cover"
+            />
+            <span className="text-sm">{user.displayName || user.email}</span>
+            <button
+              onClick={handleLogout}
+              className="text-red-600 text-sm hover:underline ml-2"
+            >
+              Logout
+            </button>
+          </div>
+        ) : (
+          <div className="space-x-3 text-sm">
+            <Link href="/login" className="text-blue-600 underline">Login</Link>
+            <Link href="/sign-up" className="text-blue-600 underline">Sign Up</Link>
+          </div>
+        )}
+      </div>
     </header>
   );
 };
