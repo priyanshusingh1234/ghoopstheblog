@@ -1,19 +1,32 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { useUser } from "@clerk/nextjs"; // or your auth hook
 
 export default function AuthModal({ isOpen, onClose }) {
+  const { user } = useUser(); // Adjust depending on your auth provider
+  const [shouldShow, setShouldShow] = useState(false);
+
   useEffect(() => {
-    if (isOpen) document.body.style.overflow = "hidden";
-    else document.body.style.overflow = "auto";
+    if (user) return; // Don't show for signed-in users
+
+    const viewCount = parseInt(localStorage.getItem("authModalViews") || "0");
+
+    if (viewCount < 3 && isOpen) {
+      setShouldShow(true);
+      localStorage.setItem("authModalViews", (viewCount + 1).toString());
+      document.body.style.overflow = "hidden";
+    } else {
+      onClose(); // close if limit reached
+    }
 
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [isOpen]);
+  }, [isOpen, user, onClose]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !shouldShow || user) return null;
 
   return (
     <AnimatePresence>
@@ -51,7 +64,7 @@ export default function AuthModal({ isOpen, onClose }) {
             <p className="text-gray-600 dark:text-gray-300 text-base md:text-lg mb-6">
               Dive into hand-picked content curated for developers, tech
               enthusiasts, and curious minds. Get updates, guides, and
-              behind-the-scenes insights straight from the  community.
+              behind-the-scenes insights straight from the community.
             </p>
 
             <div className="flex justify-center gap-6 mt-8">
@@ -61,13 +74,12 @@ export default function AuthModal({ isOpen, onClose }) {
               >
                 Log In
               </Link>
-           <Link
-  href="/sign-up"
-  className="bg-white text-gray-900 hover:bg-gray-100 dark:bg-zinc-100 dark:text-black dark:hover:bg-zinc-200 px-6 py-2 rounded-lg transition-all font-medium shadow-sm"
->
-  Sign Up
-</Link>
-
+              <Link
+                href="/sign-up"
+                className="bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-white dark:text-black dark:hover:bg-gray-300 px-6 py-2 rounded-lg transition-all font-medium shadow"
+              >
+                Sign Up
+              </Link>
             </div>
           </div>
         </motion.div>
