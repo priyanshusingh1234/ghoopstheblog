@@ -4,6 +4,7 @@ import { auth, googleProvider } from "@/src/utils/firebase";
 import {
   signInWithEmailAndPassword,
   signInWithPopup,
+  sendPasswordResetEmail,
 } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -12,7 +13,10 @@ import { motion, AnimatePresence } from "framer-motion";
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [resetEmail, setResetEmail] = useState("");
   const [error, setError] = useState("");
+  const [resetMsg, setResetMsg] = useState("");
+  const [showReset, setShowReset] = useState(false);
   const router = useRouter();
 
   const handleLogin = async (e) => {
@@ -32,6 +36,20 @@ export default function LoginPage() {
       router.push("/");
     } catch (err) {
       setError(err.message);
+    }
+  };
+
+  const handlePasswordReset = async () => {
+    setResetMsg("");
+    if (!resetEmail) {
+      setResetMsg("❌ Please enter your email.");
+      return;
+    }
+    try {
+      await sendPasswordResetEmail(auth, resetEmail);
+      setResetMsg("✅ Reset email sent. Check your inbox.");
+    } catch (err) {
+      setResetMsg(err.message);
     }
   };
 
@@ -76,6 +94,12 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
+            <p
+              onClick={() => setShowReset(true)}
+              className="text-sm text-blue-600 hover:underline cursor-pointer text-right mt-1"
+            >
+              Forgot Password?
+            </p>
           </div>
 
           <motion.button
@@ -122,6 +146,55 @@ export default function LoginPage() {
             >
               {error}
             </motion.p>
+          )}
+        </AnimatePresence>
+
+        {/* Reset Password Box */}
+        <AnimatePresence>
+          {showReset && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              className="mt-6 bg-gray-100 p-4 rounded-lg border border-gray-300"
+            >
+              <h2 className="text-lg font-semibold mb-2 text-gray-700">
+                Reset Password
+              </h2>
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className="w-full p-2 border border-gray-300 rounded mb-3"
+                value={resetEmail}
+                onChange={(e) => setResetEmail(e.target.value)}
+              />
+              <button
+                onClick={handlePasswordReset}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white p-2 rounded mb-2"
+              >
+                Send Reset Email
+              </button>
+              {resetMsg && (
+                <p
+                  className={`text-sm ${
+                    resetMsg.startsWith("✅")
+                      ? "text-green-600"
+                      : "text-red-600"
+                  }`}
+                >
+                  {resetMsg}
+                </p>
+              )}
+              <button
+                onClick={() => {
+                  setShowReset(false);
+                  setResetMsg("");
+                }}
+                className="text-sm text-gray-500 mt-2 hover:underline"
+              >
+                Cancel
+              </button>
+            </motion.div>
           )}
         </AnimatePresence>
       </div>
