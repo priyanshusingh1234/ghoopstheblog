@@ -7,8 +7,9 @@ import { slug as slugify } from "github-slugger";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
-// ✅ Import Giscus comment
+// ✅ Import your GiscusComment component
 import GiscusComment from "@/src/components/GiscusComment/GiscusComment";
+
 
 export async function generateStaticParams() {
   return blogs.map((blog) => ({ slug: blog.slug }));
@@ -39,7 +40,6 @@ export async function generateMetadata({ params }) {
   return {
     title: blog.title,
     description: blog.description,
-    keywords: blog.keywords || [], // ✅ Keywords added here
     openGraph: {
       title: blog.title,
       description: blog.description,
@@ -74,7 +74,7 @@ function TableOfContentsItem({ item, level = "two" }) {
                   flex items-center justify-start"
       >
         {level === "three" && (
-          <span className="flex w-1 h-1 rounded-full bg-dark mr-2" />
+          <span className="flex w-1 h-1 rounded-full bg-dark mr-2">&nbsp;</span>
         )}
         <span className="hover:underline">{item.title}</span>
       </a>
@@ -118,7 +118,7 @@ export default async function BlogPage({ params }) {
     author: [
       {
         "@type": "Person",
-        name: blog?.author ? blog.author : siteMetadata.author,
+        name: blog?.author ? [blog.author] : siteMetadata.author,
         url: siteMetadata.twitter,
       },
     ],
@@ -126,15 +126,10 @@ export default async function BlogPage({ params }) {
 
   return (
     <>
-      {/* ✅ JSON-LD + meta keywords */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      {blog.keywords && (
-        <meta name="keywords" content={blog.keywords.join(", ")} />
-      )}
-
       <article>
         <div className="mb-8 text-center relative w-full h-[70vh] bg-dark">
           <div className="w-full z-10 flex flex-col items-center justify-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
@@ -180,6 +175,7 @@ export default async function BlogPage({ params }) {
           <RenderMdx blog={blog} />
         </div>
 
+        {/* ✅ Add the comment section below the post */}
         <div className="mt-16 px-5 md:px-10">
           <GiscusComment />
         </div>
