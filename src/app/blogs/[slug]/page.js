@@ -2,21 +2,18 @@ import BlogDetails from "@/src/components/Blog/BlogDetails";
 import RenderMdx from "@/src/components/Blog/RenderMdx";
 import Tag from "@/src/components/Elements/Tag";
 import siteMetadata from "@/src/utils/siteMetaData";
-import { blogs } from '@/.velite/generated';
+import { blogs } from "@/.velite/generated";
 import { slug as slugify } from "github-slugger";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-
-// ✅ Import your GiscusComment component
 import GiscusComment from "@/src/components/GiscusComment/GiscusComment";
-
 
 export async function generateStaticParams() {
   return blogs.map((blog) => ({ slug: blog.slug }));
 }
 
 export async function generateMetadata({ params }) {
-  const { slug } = await params;
+  const { slug } = params;
   const blog = blogs.find((blog) => blog.slug === slug);
   if (!blog) return;
 
@@ -24,18 +21,13 @@ export async function generateMetadata({ params }) {
   const modifiedAt = new Date(blog.updatedAt || blog.publishedAt).toISOString();
 
   let imageList = [siteMetadata.socialBanner];
-  if (blog.image) {
-    imageList =
-      typeof blog.image.src === "string"
-        ? [siteMetadata.siteUrl + blog.image.src]
-        : blog.image;
+  if (blog.image?.src) {
+    imageList = [siteMetadata.siteUrl + blog.image.src];
   }
 
   const ogImages = imageList.map((img) => ({
     url: img.includes("http") ? img : siteMetadata.siteUrl + img,
   }));
-
-  const authors = blog?.author ? [blog.author] : siteMetadata.author;
 
   return {
     title: blog.title,
@@ -43,20 +35,23 @@ export async function generateMetadata({ params }) {
     openGraph: {
       title: blog.title,
       description: blog.description,
-      url: siteMetadata.siteUrl + blog.url,
+      url: siteMetadata.siteUrl + "/blogs/" + blog.slug,
       siteName: siteMetadata.title,
       locale: "en_US",
       type: "article",
       publishedTime: publishedAt,
       modifiedTime: modifiedAt,
       images: ogImages,
-      authors: authors.length > 0 ? authors : [siteMetadata.author],
+      authors: [blog.author || siteMetadata.author],
     },
     twitter: {
       card: "summary_large_image",
       title: blog.title,
       description: blog.description,
-      images: ogImages,
+      images: ogImages.map((img) => img.url),
+    },
+    alternates: {
+      canonical: `${siteMetadata.siteUrl}/blogs/${slug}`,
     },
   };
 }
@@ -67,25 +62,17 @@ function TableOfContentsItem({ item, level = "two" }) {
       <a
         href={item.url}
         data-level={level}
-        className="data-[level=two]:pl-0 data-[level=two]:pt-2
-                  data-[level=two]:border-t border-solid border-dark/40
-                  data-[level=three]:pl-4
-                  sm:data-[level=three]:pl-6
-                  flex items-center justify-start"
+        className="data-[level=two]:pl-0 data-[level=two]:pt-2 data-[level=two]:border-t border-solid border-dark/40 data-[level=three]:pl-4 sm:data-[level=three]:pl-6 flex items-center justify-start"
       >
         {level === "three" && (
-          <span className="flex w-1 h-1 rounded-full bg-dark mr-2">&nbsp;</span>
+          <span className="flex w-1 h-1 rounded-full bg-dark mr-2" />
         )}
         <span className="hover:underline">{item.title}</span>
       </a>
-      {item.items.length > 0 && (
+      {item.items?.length > 0 && (
         <ul className="mt-1">
           {item.items.map((subItem) => (
-            <TableOfContentsItem
-              key={subItem.url}
-              item={subItem}
-              level="three"
-            />
+            <TableOfContentsItem key={subItem.url} item={subItem} level="three" />
           ))}
         </ul>
       )}
@@ -94,17 +81,14 @@ function TableOfContentsItem({ item, level = "two" }) {
 }
 
 export default async function BlogPage({ params }) {
-  const { slug } = await params;
+  const { slug } = params;
   const blog = blogs.find((blog) => blog.slug === slug);
 
   if (!blog) notFound();
 
   let imageList = [siteMetadata.socialBanner];
-  if (blog.image) {
-    imageList =
-      typeof blog.image.src === "string"
-        ? [siteMetadata.siteUrl + blog.image.src]
-        : blog.image;
+  if (blog.image?.src) {
+    imageList = [siteMetadata.siteUrl + blog.image.src];
   }
 
   const jsonLd = {
@@ -118,7 +102,7 @@ export default async function BlogPage({ params }) {
     author: [
       {
         "@type": "Person",
-        name: blog?.author ? [blog.author] : siteMetadata.author,
+        name: blog.author || siteMetadata.author,
         url: siteMetadata.twitter,
       },
     ],
@@ -175,7 +159,6 @@ export default async function BlogPage({ params }) {
           <RenderMdx blog={blog} />
         </div>
 
-        {/* ✅ Add the comment section below the post */}
         <div className="mt-16 px-5 md:px-10">
           <GiscusComment />
         </div>
