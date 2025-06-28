@@ -5,7 +5,7 @@ const siteMetadata = {
   description: 'A blog providing you with the best possible articles across various topics.',
   language: 'en-US',
   theme: 'system',
-  siteUrl: 'https://ghoopstheblog.vercel.app',
+  siteUrl: 'https://ghoopstheblog.me',
   siteLogo: '/logo.png',
   socialBanner: '/social-banner.png',
   favicon: '/favicon.ico', // ✅ Added favicon field
