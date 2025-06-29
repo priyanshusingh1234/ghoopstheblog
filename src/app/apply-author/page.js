@@ -17,6 +17,7 @@ export default function ApplyAuthorPage() {
     const user = auth.currentUser;
     if (!user) return;
 
+    // 🔹 Save application
     const applicationRef = doc(db, "authorApplications", user.uid);
     await setDoc(applicationRef, {
       uid: user.uid,
@@ -25,6 +26,15 @@ export default function ApplyAuthorPage() {
       portfolio,
       status: "pending",
       submittedAt: new Date(),
+    });
+
+    // 🔹 Add entry to authors collection (used in blog display)
+    const authorRef = doc(db, "authors", user.uid);
+    await setDoc(authorRef, {
+      uid: user.uid,
+      email: user.email,
+      is_verified: false,
+      joinedAt: new Date(),
     });
 
     setSubmitted(true);
