@@ -1,5 +1,5 @@
 const siteMetadata = {
-  title: 'Ghoops! | The Blog - A blog for everyone!',
+  title: ' Ghoops – AI, Dev & Productivity Insights Blog!',
   author: 'Priyanshu',
   headerTitle: 'GhoopstheBlog',
   description: 'A blog providing you with the best possible articles across various topics.',
