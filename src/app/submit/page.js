@@ -5,12 +5,12 @@ export const metadata = {
   title: "Submit an Article | GhoopsTheBlog",
   description: "Submit original articles to GhoopsTheBlog using our markdown editor.",
   alternates: {
-    canonical: "https://ghoopstheblog.vercel.app/submit",
+    canonical: "https://ghoopstheblog.me/submit",
   },
   openGraph: {
     title: "Submit an Article | GhoopsTheBlog",
     description: "Write and submit your original articles to GhoopsTheBlog using our easy markdown editor.",
-    url: "https://ghoopstheblog.vercel.app/submit",
+    url: "https://ghoopstheblog.me/submit",
     siteName: "GhoopsTheBlog",
     type: "website",
   },
