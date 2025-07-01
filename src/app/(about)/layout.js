@@ -2,13 +2,13 @@ import InsightRoll from "@/src/components/About/InsightRoll";
 
 
 const insights = [
-     "150+ Blog Posts Published",
-  "3+ Years of Blogging Experience",
-  "98% Reader Satisfaction",
-  "25K+ Monthly Readers",
-  "Featured on Medium & Dev.to",
-  "Guest Contributor to Popular Tech Blogs 📝",
-  "Recipient of the Best Blogger Award 🏆",
+      "📝 50+ Quality Posts & Counting",
+  "🚀 Just Getting Started — Join Us Early!",
+  "❤️ Your Support Means Everything to Us",
+  "🙏 Help Us Grow by Sharing Our Blog",
+  "📣 We’re Building a Helpful Space for Everyone",
+  "🌱 Be a Part of Our Growing Reader Community",
+  "💬 Feedback & Suggestions Always Welcome!",
 ];
   
 
