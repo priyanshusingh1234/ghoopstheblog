@@ -2,9 +2,8 @@ import "./globals.css";
 import { cx } from "@/src/utils";
 import { Inter, Manrope } from "next/font/google";
 import Header from "@/src/components/Header";
-import Footer from "../components/Footer";
-import siteMetadata from "../utils/siteMetaData";
-import Script from "next/script";
+import Footer from "@/src/components/Footer";
+import siteMetadata from "@/src/utils/siteMetaData";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -64,19 +63,40 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
-        {/* ✅ AdSense site-wide script */}
-        <Script
+        {/* 🌓 Prevent theme flicker on load */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function () {
+                try {
+                  var theme = localStorage.getItem('theme');
+                  if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    document.documentElement.classList.remove('dark');
+                  }
+                } catch (_) {}
+              })();
+            `,
+          }}
+        />
+
+        {/* ✅ AdSense script */}
+        <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2649070791913290"
           crossOrigin="anonymous"
-          strategy="beforeInteractive"
-        />
-        <meta
-          name="google-adsense-account"
-          content="ca-pub-2649070791913290"
-        />
+        ></script>
+        <meta name="google-adsense-account" content="ca-pub-2649070791913290" />
+
+        {/* 🎨 Theme color */}
+        <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+        <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)" />
+
+        {/* 🔤 Font loading performance */}
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body
         className={cx(
@@ -85,13 +105,6 @@ export default function RootLayout({ children }) {
           "font-mr bg-light dark:bg-dark"
         )}
       >
-        <Script id="theme-switcher" strategy="beforeInteractive">
-          {`if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark')
-          } else {
-            document.documentElement.classList.remove('dark')
-          }`}
-        </Script>
         <Header />
         {children}
         <Footer />

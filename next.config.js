@@ -1,21 +1,10 @@
-/** @type {import('next').NextConfig} */
-module.exports = {
-  reactStrictMode: false, // 🔴 Disable Strict Mode
+// next.config.js
 
-  compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
-  },
-
-  webpack: (config) => {
-    config.plugins.push(new VeliteWebpackPlugin());
-    return config;
-  },
-};
-
+/** @type {import('webpack').Compiler} */
 class VeliteWebpackPlugin {
   static started = false;
 
-  apply(/** @type {import('webpack').Compiler} */ compiler) {
+  apply(compiler) {
     compiler.hooks.beforeCompile.tapPromise('VeliteWebpackPlugin', async () => {
       if (VeliteWebpackPlugin.started) return;
       VeliteWebpackPlugin.started = true;
@@ -25,3 +14,27 @@ class VeliteWebpackPlugin {
     });
   }
 }
+
+/** @type {import('next').NextConfig} */
+module.exports = {
+  reactStrictMode: false,
+
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
+
+  images: {
+    domains: [
+      'ghoopstheblog.me',
+      'images.unsplash.com',
+      'cdn.pixabay.com',
+      'cdn.pexels.com',
+      // add more domains if needed
+    ],
+  },
+
+  webpack: (config) => {
+    config.plugins.push(new VeliteWebpackPlugin());
+    return config;
+  },
+};

@@ -1,3 +1,5 @@
+// app/blogs/[slug]/page.js
+
 import { blogs } from "@/.velite/generated";
 import siteMetadata from "@/src/utils/siteMetaData";
 import { slug as slugify } from "github-slugger";
@@ -55,7 +57,7 @@ export async function generateMetadata({ params }) {
 
   let imageList = [siteMetadata.socialBanner];
   if (blog.image?.src) {
-    imageList = [siteMetadata.siteUrl + blog.image.src];
+    imageList = [blog.image.src.startsWith("http") ? blog.image.src : siteMetadata.siteUrl + blog.image.src];
   }
 
   const ogImages = imageList.map((img) => ({
@@ -96,12 +98,14 @@ export default async function BlogPage({ params }) {
 
   const randomBlog = getRandomBlog(slug);
 
-  let imageList = [siteMetadata.socialBanner];
-  if (blog.image?.src) {
-    imageList = [siteMetadata.siteUrl + blog.image.src];
-  }
+  const imageUrl = blog.image?.src?.startsWith("http")
+    ? blog.image.src
+    : siteMetadata.siteUrl + blog.image?.src;
 
-  // Fetch author from Firestore
+  const randomBlogImage = randomBlog.image?.src?.startsWith("http")
+    ? randomBlog.image.src
+    : siteMetadata.siteUrl + (randomBlog.image?.src || siteMetadata.socialBanner);
+
   let authorName = "Unknown Author";
   let isVerified = false;
 
@@ -120,7 +124,7 @@ export default async function BlogPage({ params }) {
     "@type": "BlogPosting",
     headline: blog.title,
     description: blog.description,
-    image: imageList,
+    image: [imageUrl],
     datePublished: new Date(blog.publishedAt).toISOString(),
     dateModified: new Date(blog.updatedAt || blog.publishedAt).toISOString(),
     author: [
@@ -174,12 +178,10 @@ export default async function BlogPage({ params }) {
           </div>
           <div className="absolute top-0 left-0 right-0 bottom-0 h-full bg-dark/60 dark:bg-dark/40" />
           <Image
-            src={blog.image.src}
-            placeholder="blur"
-            blurDataURL={blog.image.blurDataURL}
+            src={imageUrl}
             alt={blog.title}
-            width={blog.image.width}
-            height={blog.image.height}
+            width={blog.image?.width || 1200}
+            height={blog.image?.height || 600}
             className="aspect-square w-full h-full object-cover object-center"
             priority
             sizes="100vw"
@@ -213,10 +215,10 @@ export default async function BlogPage({ params }) {
             className="group block relative rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition duration-300"
           >
             <Image
-              src={randomBlog.image?.src || siteMetadata.socialBanner}
+              src={randomBlogImage}
               alt={randomBlog.title}
-              width={1200}
-              height={600}
+              width={randomBlog.image?.width || 1200}
+              height={randomBlog.image?.height || 600}
               className="w-full h-[250px] object-cover object-center transform group-hover:scale-105 transition duration-300"
             />
             <div className="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-50 transition" />
