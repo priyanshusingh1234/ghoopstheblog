@@ -129,6 +129,7 @@ const Footer = () => {
         </span>
         
         <a href="/submit">Write</a>
+        <a href="/trending">Trending Posts</a>
 
       </div>
     </footer>
