@@ -10,7 +10,7 @@ import Tag from "@/src/components/Elements/Tag";
 import GiscusComment from "@/src/components/GiscusComment/GiscusComment";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/src/utils/firebase";
-import LikeButton from "@/src/components/LikeButton/LikeButton"; // ✅ Added
+import LikeButtonWrapper from "@/src/components/LikeButtonWrapper/LikeButtonWrapper";
 
 function TableOfContentsItem({ item, level = "two" }) {
   return (
@@ -154,7 +154,7 @@ export default async function BlogPage({ params }) {
             </h1>
 
             {/* ✅ Like and Meta Info */}
-            <div className="mt-3 text-light text-sm flex items-center justify-center gap-3">
+            <div className="mt-3 text-light text-sm flex items-center justify-center gap-3 flex-wrap">
               <span>By {authorName}</span>
               {isVerified && (
                 <span title="Verified Author" className="inline-block w-5 h-5">
@@ -164,9 +164,8 @@ export default async function BlogPage({ params }) {
                   </svg>
                 </span>
               )}
-
-              {/* 🔥 Like Button at top beside author */}
-              <LikeButton slug={slug} />
+              {slug ? <LikeButtonWrapper slug={slug} />
+ : <div>Loading Like Button...</div>}
             </div>
           </div>
 
