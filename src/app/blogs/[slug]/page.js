@@ -1,5 +1,3 @@
-// app/blogs/[slug]/page.js
-
 import { blogs } from "@/.velite/generated";
 import siteMetadata from "@/src/utils/siteMetaData";
 import { slug as slugify } from "github-slugger";
@@ -12,6 +10,7 @@ import Tag from "@/src/components/Elements/Tag";
 import GiscusComment from "@/src/components/GiscusComment/GiscusComment";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/src/utils/firebase";
+import LikeButton from "@/src/components/LikeButton/LikeButton"; // ✅ Added
 
 function TableOfContentsItem({ item, level = "two" }) {
   return (
@@ -153,29 +152,24 @@ export default async function BlogPage({ params }) {
             <h1 className="inline-block mt-6 font-semibold capitalize text-light text-2xl md:text-3xl lg:text-5xl !leading-normal relative w-5/6">
               {blog.title}
             </h1>
-            <div className="mt-3 text-light text-sm flex items-center gap-2">
+
+            {/* ✅ Like and Meta Info */}
+            <div className="mt-3 text-light text-sm flex items-center justify-center gap-3">
               <span>By {authorName}</span>
               {isVerified && (
                 <span title="Verified Author" className="inline-block w-5 h-5">
-                  <svg
-                    viewBox="0 0 100 100"
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-full h-full"
-                  >
+                  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
                     <circle cx="50" cy="50" r="45" fill="#22c55e" />
-                    <path
-                      d="M35 52 l12 12 20 -24"
-                      stroke="white"
-                      strokeWidth="8"
-                      fill="none"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
+                    <path d="M35 52 l12 12 20 -24" stroke="white" strokeWidth="8" fill="none" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </span>
               )}
+
+              {/* 🔥 Like Button at top beside author */}
+              <LikeButton slug={slug} />
             </div>
           </div>
+
           <div className="absolute top-0 left-0 right-0 bottom-0 h-full bg-dark/60 dark:bg-dark/40" />
           <Image
             src={imageUrl}
@@ -193,9 +187,7 @@ export default async function BlogPage({ params }) {
         <div className="grid grid-cols-12 gap-y-8 lg:gap-8 sxl:gap-16 mt-8 px-5 md:px-10">
           <div className="col-span-12 lg:col-span-4">
             <details className="border border-dark dark:border-light text-dark dark:text-light rounded-lg p-4 sticky top-6 max-h-[80vh] overflow-y-auto" open>
-              <summary className="text-lg font-semibold capitalize cursor-pointer">
-                Table Of Content
-              </summary>
+              <summary className="text-lg font-semibold capitalize cursor-pointer">Table Of Content</summary>
               <ul className="mt-4 font-in text-base">
                 {blog.toc.map((item) => (
                   <TableOfContentsItem key={item.url} item={item} />
@@ -204,10 +196,11 @@ export default async function BlogPage({ params }) {
             </details>
           </div>
 
-          <RenderMdx blog={blog} />
+          <div className="col-span-12 lg:col-span-8">
+            <RenderMdx blog={blog} />
+          </div>
         </div>
 
-        {/* Recommended Post */}
         <div className="mt-24 px-5 md:px-10">
           <h2 className="text-2xl font-bold mb-6 text-center">You Might Also Like</h2>
           <Link
