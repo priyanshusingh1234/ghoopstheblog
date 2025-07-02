@@ -97,6 +97,12 @@ export default function RootLayout({ children }) {
 
         {/* 🔤 Font loading performance */}
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+
+        {/* ✅ LikeBtn Widget Script */}
+        <script
+          async
+          src="//w.likebtn.com/js/w/widget.js"
+        ></script>
       </head>
       <body
         className={cx(
