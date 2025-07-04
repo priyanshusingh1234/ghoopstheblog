@@ -175,6 +175,7 @@ const Header = () => {
         <Link href="/contact" className="mx-2">Contact</Link>
         <Link href="/privacy-policies" className="mx-2">Privacy</Link>
         <Link href="/submit" className="mx-2">Write</Link>
+         <Link href="/trending" className="mx-2">Trending</Link>
         <button
           onClick={() => setMode(mode === "light" ? "dark" : "light")}
           className={cx(
