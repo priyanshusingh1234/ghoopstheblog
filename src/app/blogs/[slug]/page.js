@@ -10,6 +10,12 @@ import Tag from "@/src/components/Elements/Tag";
 import GiscusComment from "@/src/components/GiscusComment/GiscusComment";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/src/utils/firebase";
+import PrintSection from '@/src/components/PrintSection';
+
+
+// Load only on the client side
+
+
 
 function TableOfContentsItem({ item, level = "two" }) {
   return (
@@ -141,6 +147,7 @@ export default async function BlogPage({ params }) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <article>
+        {/* ✅ Hero Section with Print Button */}
         <div className="mb-8 text-center relative w-full h-[70vh] bg-dark">
           <div className="w-full z-10 flex flex-col items-center justify-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
             <Tag
@@ -148,11 +155,14 @@ export default async function BlogPage({ params }) {
               link={`/categories/${slugify(blog.tags[0])}`}
               className="px-6 text-sm py-2"
             />
+
+            {/* ✅ Print Button */}
+          <PrintSection />
+
             <h1 className="inline-block mt-6 font-semibold capitalize text-light text-2xl md:text-3xl lg:text-5xl !leading-normal relative w-5/6">
               {blog.title}
             </h1>
 
-            {/* ✅ Author, Verification, and Like Button */}
             <div className="mt-3 text-light text-sm flex items-center justify-center gap-3 flex-wrap">
               <span>By {authorName}</span>
               {isVerified && (
@@ -163,8 +173,6 @@ export default async function BlogPage({ params }) {
                   </svg>
                 </span>
               )}
-
-              {/* ✅ LikeBtn.com Like Button */}
               <span
                 className="likebtn-wrapper"
                 data-identifier={slug}
