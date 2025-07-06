@@ -11,6 +11,7 @@ import GiscusComment from "@/src/components/GiscusComment/GiscusComment";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/src/utils/firebase";
 import PrintSection from '@/src/components/PrintSection';
+import ReportButton from "@/src/components/ReportButton";
 
 
 // Load only on the client side
@@ -157,7 +158,7 @@ export default async function BlogPage({ params }) {
             />
 
             {/* ✅ Print Button */}
-          <PrintSection />
+            <PrintSection />
 
             <h1 className="inline-block mt-6 font-semibold capitalize text-light text-2xl md:text-3xl lg:text-5xl !leading-normal relative w-5/6">
               {blog.title}
@@ -213,6 +214,10 @@ export default async function BlogPage({ params }) {
             <RenderMdx blog={blog} />
           </div>
         </div>
+        <div className="flex justify-center items-center py-6">
+          <ReportButton slug={slug} />
+        </div>
+
 
         <div className="mt-24 px-5 md:px-10">
           <h2 className="text-2xl font-bold mb-6 text-center">You Might Also Like</h2>
@@ -237,6 +242,7 @@ export default async function BlogPage({ params }) {
 
         <div className="mt-16 px-5 md:px-10">
           <GiscusComment />
+
         </div>
       </article>
     </>
