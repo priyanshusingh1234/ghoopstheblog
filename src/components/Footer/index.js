@@ -122,15 +122,37 @@ const Footer = () => {
         </a>
       </div>
 
+      {/* ✅ Product Hunt Badge */}
+      <div className="mt-8">
+        <a
+          href="https://www.producthunt.com/products/ghoopstheblog?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-ghoopstheblog"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=986591&theme=light&t=1751792608721"
+            alt="GhoopsTheBlog - Unleashing Curiosity, One Post at a Time | Product Hunt"
+            style={{ width: "250px", height: "54px" }}
+            width="250"
+            height="54"
+          />
+        </a>
+      </div>
+
       {/* ✅ Footer Bottom */}
       <div className="w-full mt-16 md:mt-24 relative font-medium border-t border-solid border-light py-6 px-8 flex flex-col md:flex-row items-center justify-between">
         <span className="text-center">
           &copy;2025 Ghoops!. All rights reserved.
         </span>
-        
-        <a href="/submit">Write</a>
-        <a href="/trending">Trending Posts</a>
 
+        <div className="flex gap-4 mt-4 md:mt-0">
+          <Link href="/submit" className="hover:underline">
+            Write
+          </Link>
+          <Link href="/trending" className="hover:underline">
+            Trending Posts
+          </Link>
+        </div>
       </div>
     </footer>
   );
