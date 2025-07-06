@@ -10,7 +10,7 @@ const siteMetadata = {
   siteLogo: '/logo.png',
   socialBanner: '/social-banner.png',
   favicon: '/favicon.ico',
-  email: 'kpk22128@gmail.com',
+  email: 'contact@ghoopstheblog.me',
   locale: 'en-US',
   twitterUsername: '@yourTwitterHandle',
   githubUsername: 'priyanshusingh1234',
