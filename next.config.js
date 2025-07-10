@@ -29,7 +29,7 @@ module.exports = {
       'images.unsplash.com',
       'cdn.pixabay.com',
       'cdn.pexels.com',
-      // add more domains if needed
+      'upload.wikimedia.org', // <-- Wikipedia images
     ],
   },
 
