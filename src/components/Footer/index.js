@@ -122,7 +122,7 @@ const Footer = () => {
         </a>
       </div>
 
-      {/* ✅ Product Hunt Badge */}
+      {/* ✅ Product Hunt Badge
       <div className="mt-8">
         <a
           href="https://www.producthunt.com/products/ghoopstheblog?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-ghoopstheblog"
@@ -137,7 +137,7 @@ const Footer = () => {
             height="54"
           />
         </a>
-      </div>
+      </div> */}
 
       {/* ✅ Footer Bottom */}
       <div className="w-full mt-16 md:mt-24 relative font-medium border-t border-solid border-light py-6 px-8 flex flex-col md:flex-row items-center justify-between">
