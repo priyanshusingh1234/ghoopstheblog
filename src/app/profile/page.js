@@ -106,10 +106,11 @@ export default function ProfilePage() {
 
           <div className="flex flex-col sm:flex-row items-center gap-6">
             <img
-              src={user.photoURL || "/default-avatar.png"}
-              alt="Profile"
-              className="w-24 h-24 rounded-full object-cover border border-gray-300 dark:border-gray-700"
-            />
+  src={userData.photoURL || user.photoURL || "/default-avatar.png"}
+  alt="Profile"
+  className="w-24 h-24 rounded-full object-cover border border-gray-300 dark:border-gray-700"
+/>
+
 
             <div>
               <p className="text-lg font-semibold flex items-center gap-2">

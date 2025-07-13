@@ -1,11 +1,20 @@
 "use client";
 import { useState } from "react";
-import { auth, googleProvider } from "@/src/utils/firebase";
+import { auth, googleProvider, db } from "@/src/utils/firebase";
 import {
   createUserWithEmailAndPassword,
   updateProfile,
   signInWithPopup,
 } from "firebase/auth";
+import {
+  doc,
+  setDoc,
+  getDoc,
+  query,
+  where,
+  collection,
+  getDocs,
+} from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -19,16 +28,49 @@ export default function SignUpPage() {
   const [error, setError] = useState("");
   const router = useRouter();
 
+  const checkUsernameExists = async (username) => {
+    const q = query(collection(db, "users"), where("username", "==", username));
+    const snap = await getDocs(q);
+    return !snap.empty;
+  };
+
   const handleSignUp = async (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
+
+    const username = displayName.toLowerCase().replace(/\s/g, "");
+    if (!username) {
+      setError("Username is required.");
+      setLoading(false);
+      return;
+    }
+
+    const exists = await checkUsernameExists(username);
+    if (exists) {
+      setError("Username already taken. Please choose another.");
+      setLoading(false);
+      return;
+    }
+
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
+      const avatar = `https://api.dicebear.com/6.x/initials/svg?seed=${username}`;
+
       await updateProfile(res.user, {
-        displayName,
-        photoURL: `https://api.dicebear.com/6.x/initials/svg?seed=${displayName}`,
+        displayName: username,
+        photoURL: avatar,
       });
+
+      await setDoc(doc(db, "users", res.user.uid), {
+        uid: res.user.uid,
+        username,
+        displayName: username,
+        email,
+        photoURL: avatar,
+        createdAt: new Date(),
+      });
+
       setSuccess(true);
       setLoading(false);
       setTimeout(() => router.push("/"), 2200);
@@ -42,7 +84,24 @@ export default function SignUpPage() {
     setError("");
     setLoading(true);
     try {
-      await signInWithPopup(auth, googleProvider);
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      const username = user.displayName?.toLowerCase().replace(/\s/g, "") || `user${Date.now()}`;
+      const avatar = user.photoURL || `https://api.dicebear.com/6.x/initials/svg?seed=${username}`;
+
+      const userRef = doc(db, "users", user.uid);
+      const userSnap = await getDoc(userRef);
+      if (!userSnap.exists()) {
+        await setDoc(userRef, {
+          uid: user.uid,
+          username,
+          displayName: user.displayName || username,
+          email: user.email,
+          photoURL: avatar,
+          createdAt: new Date(),
+        });
+      }
+
       setSuccess(true);
       setLoading(false);
       setTimeout(() => router.push("/"), 2200);
@@ -70,11 +129,11 @@ export default function SignUpPage() {
         <form onSubmit={handleSignUp} className="space-y-5">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Full Name
+              Username <span className="text-red-500">*</span>
             </label>
             <input
               className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
-              placeholder="John Doe"
+              placeholder="johndoe123"
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
               required
@@ -180,7 +239,7 @@ export default function SignUpPage() {
         </AnimatePresence>
       </div>
 
-      {/* ✅ Rolling Banner */}
+      {/* ✅ Success Banner */}
       <AnimatePresence>
         {success && (
           <motion.div

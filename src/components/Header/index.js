@@ -1,12 +1,14 @@
 "use client";
+
 import Link from "next/link";
 import Logo from "./Logo";
 import { MoonIcon, SunIcon } from "../Icons";
 import { useThemeSwitch } from "../Hooks/useThemeSwitch";
 import { useState, useEffect, useRef } from "react";
 import { cx } from "@/src/utils";
-import { auth } from "@/src/utils/firebase";
+import { auth, db } from "@/src/utils/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 
 const Header = () => {
   const [mode, setMode] = useThemeSwitch();
@@ -18,9 +20,26 @@ const Header = () => {
   const toggle = () => setClick(!click);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user || null);
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        const userRef = doc(db, "users", firebaseUser.uid);
+        const userSnap = await getDoc(userRef);
+
+        if (userSnap.exists()) {
+          const firestoreUser = userSnap.data();
+          setUser({
+            ...firebaseUser,
+            displayName: firestoreUser.displayName || firebaseUser.displayName,
+            photoURL: firestoreUser.photoURL || firebaseUser.photoURL,
+          });
+        } else {
+          setUser(firebaseUser);
+        }
+      } else {
+        setUser(null);
+      }
     });
+
     return () => unsubscribe();
   }, []);
 
@@ -93,7 +112,7 @@ const Header = () => {
           { path: "/about", label: "About" },
           { path: "/contact", label: "Contact" },
           { path: "/privacy-policies", label: "Privacy" },
-          { path: "/submit", label: "Write" }, // ✅ added
+          { path: "/submit", label: "Write" },
         ].map(({ path, label }, i) => (
           <Link
             key={i}
@@ -104,8 +123,6 @@ const Header = () => {
             {label}
           </Link>
         ))}
-
-
 
         {/* Mobile Auth Section */}
         <div className="py-3 w-full text-center border-t border-light/40 dark:border-dark/40">
@@ -175,7 +192,7 @@ const Header = () => {
         <Link href="/contact" className="mx-2">Contact</Link>
         <Link href="/privacy-policies" className="mx-2">Privacy</Link>
         <Link href="/submit" className="mx-2">Write</Link>
-         <Link href="/trending" className="mx-2">Trending</Link>
+        <Link href="/trending" className="mx-2">Trending</Link>
         <button
           onClick={() => setMode(mode === "light" ? "dark" : "light")}
           className={cx(

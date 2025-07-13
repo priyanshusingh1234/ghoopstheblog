@@ -1,5 +1,3 @@
-// next.config.js
-
 /** @type {import('webpack').Compiler} */
 class VeliteWebpackPlugin {
   static started = false;
@@ -29,8 +27,13 @@ module.exports = {
       'images.unsplash.com',
       'cdn.pixabay.com',
       'cdn.pexels.com',
-      'upload.wikimedia.org', // <-- Wikipedia images
+      'upload.wikimedia.org',
+      'api.dicebear.com',
+      'uploadthing.com',
+       'utfs.io',
     ],
+    dangerouslyAllowSVG: true, // ✅ Enable SVG from trusted domains
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;", // ✅ Recommended
   },
 
   webpack: (config) => {

@@ -4,6 +4,7 @@ import { Inter, Manrope } from "next/font/google";
 import Header from "@/src/components/Header";
 import Footer from "@/src/components/Footer";
 import siteMetadata from "@/src/utils/siteMetaData";
+import { Toaster } from "sonner"; // ✅ add this
 
 const inter = Inter({
   subsets: ["latin"],
@@ -65,7 +66,6 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* 🌓 Prevent theme flicker on load */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -82,27 +82,16 @@ export default function RootLayout({ children }) {
             `,
           }}
         />
-
-        {/* ✅ AdSense script */}
         <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2649070791913290"
           crossOrigin="anonymous"
         ></script>
         <meta name="google-adsense-account" content="ca-pub-2649070791913290" />
-
-        {/* 🎨 Theme color */}
         <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
         <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)" />
-
-        {/* 🔤 Font loading performance */}
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-
-        {/* ✅ LikeBtn Widget Script */}
-        <script
-          async
-          src="//w.likebtn.com/js/w/widget.js"
-        ></script>
+        <script async src="//w.likebtn.com/js/w/widget.js"></script>
       </head>
       <body
         className={cx(
@@ -111,6 +100,7 @@ export default function RootLayout({ children }) {
           "font-mr bg-light dark:bg-dark"
         )}
       >
+        <Toaster richColors position="top-center" /> {/* ✅ Add Toaster here */}
         <Header />
         {children}
         <Footer />
