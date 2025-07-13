@@ -1,36 +1,35 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { collection, addDoc, Timestamp } from "firebase/firestore";
 import { db } from "@/src/utils/firebase";
 import slugify from "slugify";
+import dynamic from "next/dynamic";
+
+const RemirrorEditor = dynamic(() => import("@/src/components/RemirrorEditor"), { ssr: false });
 
 export default function CreateCommunityPostPage() {
+  const router = useRouter();
   const [user, setUser] = useState(null);
   const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
   const [tags, setTags] = useState("");
+  const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-      if (firebaseUser) {
-        setUser(firebaseUser);
-      } else {
-        router.push("/login"); // Redirect to login if not signed in
-      }
+      if (firebaseUser) setUser(firebaseUser);
+      else router.push("/login");
     });
-
     return () => unsubscribe();
   }, [router]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!user) return alert("You must be logged in to post.");
+    if (!user || !content || !title) return alert("Please complete the form");
 
     const slug = slugify(title, { lower: true, strict: true });
 
@@ -38,7 +37,7 @@ export default function CreateCommunityPostPage() {
       title,
       content,
       slug,
-      tags: tags.split(",").map((tag) => tag.trim().toLowerCase()),
+      tags: tags.split(",").map((t) => t.trim().toLowerCase()),
       createdAt: Timestamp.now(),
       userId: user.uid,
       likes: 0,
@@ -50,8 +49,8 @@ export default function CreateCommunityPostPage() {
       await addDoc(collection(db, "communityPosts"), post);
       router.push("/community");
     } catch (err) {
-      console.error("Error adding post:", err);
-      alert("Failed to post. Try again.");
+      console.error("Post error:", err);
+      alert("Failed to post.");
     } finally {
       setLoading(false);
     }
@@ -63,25 +62,19 @@ export default function CreateCommunityPostPage() {
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="text"
-          placeholder="Post title"
-          className="w-full p-2 border rounded"
+          placeholder="Post Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          className="w-full p-2 border rounded"
           required
         />
-        <textarea
-          placeholder="Write your post..."
-          className="w-full p-2 border rounded h-40"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          required
-        />
+        <RemirrorEditor onChange={setContent} />
         <input
           type="text"
-          placeholder="Tags (comma separated, e.g., firebase,react)"
-          className="w-full p-2 border rounded"
+          placeholder="Tags (comma separated)"
           value={tags}
           onChange={(e) => setTags(e.target.value)}
+          className="w-full p-2 border rounded"
         />
         <button
           type="submit"

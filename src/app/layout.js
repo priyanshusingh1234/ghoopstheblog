@@ -5,6 +5,9 @@ import Header from "@/src/components/Header";
 import Footer from "@/src/components/Footer";
 import siteMetadata from "@/src/utils/siteMetaData";
 import { Toaster } from "sonner"; // ✅ add this
+// In your root layout or _app.js
+
+
 
 const inter = Inter({
   subsets: ["latin"],
