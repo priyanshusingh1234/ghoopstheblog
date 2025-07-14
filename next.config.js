@@ -23,14 +23,17 @@ module.exports = {
 
   images: {
     domains: [
-      'ghoopstheblog.me',
-      'images.unsplash.com',
-      'cdn.pixabay.com',
-      'cdn.pexels.com',
-      'upload.wikimedia.org',
-      'api.dicebear.com',
-      'uploadthing.com',
-       'utfs.io',
+        'cdn.pixabay.com',
+    'blog.hubspot.com',
+    'images.ctfassets.net',
+    'upload.wikimedia.org',
+    'tiledesk.com',
+    'sheetai.app',
+    'uizard.io',
+    'assets-global.website-files.com',
+    'taskade.com',
+    'flowiseai.com',
+    'ghoopstheblog.me',
     ],
     dangerouslyAllowSVG: true, // ✅ Enable SVG from trusted domains
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;", // ✅ Recommended

@@ -16,7 +16,7 @@ const Footer = () => {
       const formData = new FormData();
       formData.append("email", email);
 
-      const response = await fetch("https://formspree.io/f/mdkgjapr", {
+      const response = await fetch("https://formspree.io/f/xdkdnppk", {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -109,8 +109,12 @@ const Footer = () => {
           target="_blank"
           rel="noopener noreferrer"
         >
+          <Link href="https://github.com/priyanshusingh1234">
+          
           <GithubIcon className="fill-light dark:fill-dark hover:scale-125 transition-all ease duration-200" />
+          </Link>
         </a>
+
         <a
           href={siteMetadata.dribbble}
           className="inline-block w-6 h-6 mr-4"
