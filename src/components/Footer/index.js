@@ -156,6 +156,9 @@ const Footer = () => {
           <Link href="/trending" className="hover:underline">
             Trending Posts
           </Link>
+           <Link href="/terms-conditions" className="hover:underline">
+            Terms and Conditions
+          </Link>
         </div>
       </div>
     </footer>
