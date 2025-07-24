@@ -174,13 +174,7 @@ export default async function BlogPage({ params }) {
                   </svg>
                 </span>
               )}
-              <span
-                className="likebtn-wrapper"
-                data-identifier={slug}
-                data-theme="custom"
-                data-counter_show="true"
-                data-counter_clickable="true"
-              />
+             
             </div>
           </div>
 
